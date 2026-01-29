@@ -1,0 +1,69 @@
+Initializing database...
+Database initialized successfully
+Restoring WhatsApp sessions...
+WhatsApp sessions restored
+Auto-reply service initialized
+
+🚀 Server running on http://localhost:3000
+📱 WhatsApp Warming System ready!
+
+API Endpoints:
+  - Accounts: http://localhost:3000/api/accounts
+  - Messages: http://localhost:3000/api/messages
+  - Media: http://localhost:3000/api/media
+  - Config: http://localhost:3000/api/config
+  - Interactions: http://localhost:3000/api/interactions
+Bad JSON: Unexpected token : in JSON at position 8
+Bad JSON: Unexpected token : in JSON at position 8
+Creating Baileys client for account 8 (01)
+Error creating client for account 8: ReferenceError: __dirname is not defined
+    at WhatsAppManager.createClient (file:///home/ubuntu/backend/services/whatsappManager.js:28:40)
+    at file:///home/ubuntu/backend/routes/accountRoutes.js:35:31
+Error creating account: ReferenceError: __dirname is not defined
+    at WhatsAppManager.createClient (file:///home/ubuntu/backend/services/whatsappManager.js:28:40)
+    at file:///home/ubuntu/backend/routes/accountRoutes.js:35:31
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account NaN. Map size: 0, Has key: false, QR exists: false
+Creating Baileys client for account 8 (01)
+Error creating client for account 8: ReferenceError: __dirname is not defined
+    at WhatsAppManager.createClient (file:///home/ubuntu/backend/services/whatsappManager.js:28:40)
+    at file:///home/ubuntu/backend/routes/accountRoutes.js:117:31
+Error reconnecting account: ReferenceError: __dirname is not defined
+    at WhatsAppManager.createClient (file:///home/ubuntu/backend/services/whatsappManager.js:28:40)
+    at file:///home/ubuntu/backend/routes/accountRoutes.js:117:31
+[DEBUG] getQRCode called for account 8. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account 8. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account 8. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account 8. Map size: 0, Has key: false, QR exists: false
+[DEBUG] getQRCode called for account 8. Map size: 0, Has key: false, QR exists: false
+
+Shutting down gracefully...
