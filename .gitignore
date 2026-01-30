@@ -3,6 +3,7 @@ node_modules/
 oracle_key.key
 .wwebjs_auth/
 .wwebjs_cache/
-dist/
+!frontend/dist/
+# dist/
 uploads/
 warming.db
