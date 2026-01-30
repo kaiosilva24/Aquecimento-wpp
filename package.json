@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "node backend/server.js",
-    "start": "node backend/server.js"
+    "start": "node backend/server.js",
+    "build": "cd frontend && npm install && npm run build",
+    "postinstall": "npm run build"
   },
   "keywords": [
     "whatsapp",
