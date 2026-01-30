@@ -1,9 +1,0 @@
-node_modules/
-.env
-oracle_key.key
-.wwebjs_auth/
-.wwebjs_cache/
-!frontend/dist/
-# dist/
-uploads/
-warming.db
