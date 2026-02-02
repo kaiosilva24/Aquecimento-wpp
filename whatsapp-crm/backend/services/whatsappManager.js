@@ -100,20 +100,24 @@ class WhatsAppManager extends EventEmitter {
                 console.log(`[DEBUG] Network mode: ${account?.network_mode || 'undefined'}. Using LOCAL.`);
             }
 
+            // Disable terminal QR to prevent logs clutter and potential TTY issues
+            // Increased timeouts for proxy latency
+
             console.log(`Initializing Baileys with proxy agent: ${!!agent}`);
 
             const sock = makeWASocket({
                 version,
-                logger: pino({ level: 'debug' }),
-                printQRInTerminal: true,
+                logger: pino({ level: 'warn' }), // Reduced log level to avoid noise
+                printQRInTerminal: false, // DISABLED as per warning
                 auth: state,
                 browser: ['WhatsApp Warming', 'Chrome', '1.0.0'],
                 agent,
                 connectTimeoutMs: 60000,
                 defaultQueryTimeoutMs: 60000,
-                keepAliveIntervalMs: 10000,
+                keepAliveIntervalMs: 30000, // Increased to reduce ping frequency
                 emitOwnEvents: true,
-                retryRequestDelayMs: 250
+                retryRequestDelayMs: 5000, // Increased delay between retries
+                generateHighQualityLinkPreview: true,
             });
 
             // Handle connection updates
@@ -141,7 +145,11 @@ class WhatsAppManager extends EventEmitter {
                     console.log(`Account ${accountId} connection closed due to ${lastDisconnect?.error}, reconnecting: ${shouldReconnect}`);
 
                     if (shouldReconnect) {
-                        this.createClient(accountId, accountName);
+                        // Add a small delay before reconnecting to prevent tight loops
+                        setTimeout(() => {
+                            console.log(`Reconnecting account ${accountId}...`);
+                            this.createClient(accountId, accountName);
+                        }, 5000);
                     } else {
                         console.log(`Account ${accountId} logged out.`);
                         await runQuery('UPDATE accounts SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', ['disconnected', accountId]);
