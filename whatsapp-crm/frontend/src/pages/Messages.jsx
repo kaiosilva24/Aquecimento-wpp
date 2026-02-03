@@ -6,23 +6,18 @@ export default function Messages() {
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [editingMessage, setEditingMessage] = useState(null);
+    const [accounts, setAccounts] = useState([]);
+    const [selectedAccountFilter, setSelectedAccountFilter] = useState('all');
+
     const [formData, setFormData] = useState({
         content: '',
         category: 'casual',
-        active: 1
-    const [accounts, setAccounts] = useState([]);
-        const [selectedAccountFilter, setSelectedAccountFilter] = useState('all');
+        active: 1,
+        accountId: '', // '' for Global
+        isBulk: false
+    });
 
-        const [formData, setFormData] = useState({
-            content: '',
-            category: 'casual',
-            active: 1,
-            accountId: '', // '' for Global
-            isBulk: false
-        });
-
-        useEffect(() => {
-        fetchMessages();
+    useEffect(() => {
         fetchMessages();
         fetchAccounts();
     }, [selectedAccountFilter]);
