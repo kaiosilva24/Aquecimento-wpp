@@ -75,7 +75,8 @@ class WhatsAppManager extends EventEmitter {
                     throw proxyError; // Re-throw to be caught by outer try-catch, but ensured it's logged cleanly
                 }
 
-                console.log(`[SECURITY] Proxy verified. IP: ${connectionCheck.ip}, ISP: ${connectionCheck.isp}`);
+                // connectionCheck is block scoped to the try block above, so we cannot log it here.
+                // It was already logged inside the try block on success.
 
                 const protocol = proxyConfig.protocol || 'http';
                 const auth = (proxyConfig.auth_enabled && proxyConfig.username && proxyConfig.password)
