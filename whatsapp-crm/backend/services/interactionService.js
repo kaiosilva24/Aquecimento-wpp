@@ -60,6 +60,31 @@ class InteractionService {
         }
     }
 
+    // Helper to simulate typing
+    async simulateTyping(senderId, receiverPhone, messageContent) {
+        // Calculate typing duration: ~50ms - 100ms per character + random base
+        const charCount = messageContent.length;
+        const typingSpeed = Math.floor(Math.random() * 50) + 50; // 50-100ms per char
+        const baseVariance = Math.floor(Math.random() * 1000); // 0-1s variance
+        const typingDuration = (charCount * typingSpeed) + baseVariance;
+
+        // Cap duration at 15 seconds to avoid looking "stuck"
+        const finalDuration = Math.min(Math.max(1000, typingDuration), 15000);
+
+        console.log(`[HUMAN] Account ${senderId} typing for ${Math.floor(finalDuration / 1000)}s...`);
+
+        // Send "composing" presence
+        await whatsappManager.sendPresenceUpdate(senderId, receiverPhone, 'composing');
+
+        // Wait
+        await delayService.sleep(finalDuration);
+
+        // Send "paused" (optional, but good practice before sending)
+        await whatsappManager.sendPresenceUpdate(senderId, receiverPhone, 'paused');
+
+        return finalDuration;
+    }
+
     // Execute a single interaction
     async executeInteraction() {
         try {
@@ -95,7 +120,7 @@ class InteractionService {
                 return;
             }
 
-            // Process message
+            // Process message (Spintax + Variables)
             const processedMessage = messageService.processMessage(randomMessage.content);
 
             // Decide whether to send media (30% chance)
@@ -109,6 +134,9 @@ class InteractionService {
                 const media = await mediaService.getRandomMedia(mediaType);
 
                 if (media) {
+                    // Simulate typing/recording before sending media
+                    await this.simulateTyping(senderAccountId, receiverPhone, "media_placeholder");
+
                     await whatsappManager.sendMedia(
                         senderAccountId,
                         receiverPhone,
@@ -120,9 +148,13 @@ class InteractionService {
                     interactionType = mediaType;
                     mediaId = media.id;
                 } else {
+                    // Fallback to text if no media
+                    await this.simulateTyping(senderAccountId, receiverPhone, processedMessage);
                     await whatsappManager.sendMessage(senderAccountId, receiverPhone, processedMessage);
                 }
             } else {
+                // Determine message type (Text or Audio if supported later, for now just text)
+                await this.simulateTyping(senderAccountId, receiverPhone, processedMessage);
                 await whatsappManager.sendMessage(senderAccountId, receiverPhone, processedMessage);
             }
 

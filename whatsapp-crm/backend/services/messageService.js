@@ -39,6 +39,16 @@ class MessageService {
             ...variables
         };
 
+        // Process Spintax: {Option A|Option B|Option C}
+        // Matches { ... } blocks and picks one random option separated by |
+        processed = processed.replace(/\{([^{}]+)\}/g, (match, content) => {
+            if (content.includes('|')) {
+                const options = content.split('|');
+                return options[Math.floor(Math.random() * options.length)];
+            }
+            return match; // If no pipe, it might be a variable we missed or invalid syntax, leave it (or it was already replaced)
+        });
+
         // Replace all variables
         for (const [key, value] of Object.entries(defaultVars)) {
             const regex = new RegExp(`\\{${key}\\}`, 'gi');

@@ -259,6 +259,7 @@ class WhatsAppManager extends EventEmitter {
     }
 
     // Send media
+    // Send media
     async sendMedia(accountId, to, mediaPath, caption = '', isSticker = false) {
         const sock = this.getClient(accountId);
         if (!sock) throw new Error(`Client not found for account ${accountId}`);
@@ -278,6 +279,22 @@ class WhatsAppManager extends EventEmitter {
         } catch (error) {
             console.error(`Error sending media from account ${accountId}:`, error);
             throw error;
+        }
+    }
+
+    // Send presence update (typing, recording, paused)
+    async sendPresenceUpdate(accountId, to, presence) {
+        const sock = this.getClient(accountId);
+        if (!sock) throw new Error(`Client not found for account ${accountId}`);
+
+        try {
+            const jid = to.includes('@s.whatsapp.net') ? to : `${to}@s.whatsapp.net`;
+            await sock.sendPresenceUpdate(presence, jid);
+            return true;
+        } catch (error) {
+            console.error(`Error sending presence update from account ${accountId}:`, error);
+            // Don't throw, just log to prevent interruption of main flow
+            return false;
         }
     }
 
