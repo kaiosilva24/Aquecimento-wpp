@@ -64,9 +64,9 @@ class WhatsAppManager extends EventEmitter {
                 const connectionCheck = await checkConnection(proxyConfig);
 
                 if (!connectionCheck.success) {
-                    const errorMsg = `Proxy connection check FAILED: ${connectionCheck.error || 'Unknown error'}. Proceeding anyway (Fallback Mode).`;
-                    console.warn(`[SECURITY WARNING] ${errorMsg}`);
-                    // throw new Error(errorMsg); // DISABLED STRICT CHECK to allow recovery
+                    const errorMsg = `Proxy connection check FAILED: ${connectionCheck.error || 'Unknown error'}. Strict mode detected. Aborting.`;
+                    console.error(`[SECURITY CRITICAL] ${errorMsg}`);
+                    throw new Error(errorMsg); // STRICT CHECK ENABLED
                 }
 
                 console.log(`[SECURITY] Proxy verified. IP: ${connectionCheck.ip}, ISP: ${connectionCheck.isp}`);

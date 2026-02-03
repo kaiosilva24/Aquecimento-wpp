@@ -226,8 +226,23 @@ router.get('/:id/network', async (req, res) => {
         let proxyConfig = null;
 
         // If network mode is 'proxy' and a proxy is assigned, fetch proxy details
-        if (account.network_mode === 'proxy' && account.proxy_id) {
+        if (account.network_mode === 'proxy') {
+            if (!account.proxy_id) {
+                return res.json({
+                    success: false,
+                    mode: 'proxy',
+                    error: 'Proxy mode enabled but no proxy ID assigned. Connection blocked to prevent leak.'
+                });
+            }
             proxyConfig = await getQuery('SELECT * FROM proxies WHERE id = ?', [account.proxy_id]);
+
+            if (!proxyConfig) {
+                return res.json({
+                    success: false,
+                    mode: 'proxy',
+                    error: 'Assigned proxy not found in database.'
+                });
+            }
         }
 
         console.log(`[Account ${id}] Checking network status via ${account.network_mode}...`);
