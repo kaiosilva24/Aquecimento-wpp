@@ -170,28 +170,22 @@ export function runQuery(sql, params = []) {
   return new Promise(async (resolve, reject) => {
     const client = await pool.connect();
     try {
-      const pgSql = convertSql(sql);
-      const res = await client.query(pgSql, params);
-      // SQLite returns { id: lastID, changes: changes }
-      // PG returns rowCount. Last ID is tricky in generic INSERT without RETURNING.
-      // But for UPDATE/DELETE, 'changes' matches 'rowCount'.
-      // For INSERT, to get ID, we should append 'RETURNING id' but that changes SQL structure.
-      // For now, mapping 'changes' to rowCount is safe for updates.
-      // If code relies on 'id' from insert, it might break unless we patch queries.
-      // Let's assume standard usage or add RETURNING id blindly for INSERTS?
-      // Safer: if SQL starts with INSERT, append RETURNING id?
+      let pgSql = convertSql(sql);
 
-      let id = 0;
-      if (sql.trim().toUpperCase().startsWith('INSERT')) {
-        // If we can't get ID easily without modifying query query-by-query, 
-        // we might just return the count and hope logic doesn't depend on instant ID.
-        // Or we can try to refactor specific Insert calls.
-        // Actually, 'res.rows[0]?.id' if we added RETURNING.
-        // Since we didn't add RETURNING, 'id' is unknown.
-        // CAUTION: This is a potential breaking point.
+      // Auto-append RETURNING id for INSERTs to simulate SQLite behavior
+      if (pgSql.trim().toUpperCase().startsWith('INSERT') && !pgSql.toUpperCase().includes('RETURNING')) {
+        pgSql += ' RETURNING id';
       }
 
-      resolve({ id: 0, changes: res.rowCount });
+      const res = await client.query(pgSql, params);
+
+      // Attempt to capture ID from returned row
+      let lastId = 0;
+      if (res.rows.length > 0 && res.rows[0].id) {
+        lastId = res.rows[0].id;
+      }
+
+      resolve({ id: lastId, changes: res.rowCount });
     } catch (err) {
       console.error('Query Error:', err);
       reject(err);
