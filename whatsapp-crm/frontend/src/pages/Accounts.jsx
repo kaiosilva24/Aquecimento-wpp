@@ -107,9 +107,12 @@ export default function Accounts() {
                 if (res.ok) {
                     const data = await res.json();
                     setQrCode(data.qr_code);
+                } else {
+                    setQrCode(''); // Clear QR if error (e.g. security block)
                 }
             } catch (error) {
                 console.error('Error fetching QR code:', error);
+                setQrCode('');
             }
         };
 
@@ -403,7 +406,7 @@ export default function Accounts() {
                             </div>
                         )}
 
-                        <div className="text-center">
+                        <div className="flex flex-col items-center">
                             {qrCode ? (
                                 <>
                                     <div className="p-sm bg-white inline-block rounded-md">

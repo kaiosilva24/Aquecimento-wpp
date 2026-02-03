@@ -180,8 +180,15 @@ router.put('/:id/network-mode', async (req, res) => {
 
         await runQuery(query, params);
 
+        // FORCE DISCONNECT: If the network mode changes, the existing client (if any) is using the OLD mode.
+        // We must kill it to prevent "Local" connection persisting while DB says "Proxy".
+        if (whatsappManager.isConnected(parseInt(id))) {
+            console.log(`[NETWORK CHANGE] Disconnecting account ${id} to apply new network mode: ${networkMode}`);
+            await whatsappManager.disconnectClient(parseInt(id));
+        }
+
         res.json({
-            message: 'Network mode updated successfully',
+            message: 'Network mode updated successfully. Active connections were reset.',
             network_mode: networkMode
         });
     } catch (error) {
