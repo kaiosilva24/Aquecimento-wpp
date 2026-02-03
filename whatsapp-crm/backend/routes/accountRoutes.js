@@ -168,7 +168,7 @@ router.post('/:id/reconnect', async (req, res) => {
 router.put('/:id/network-mode', async (req, res) => {
     try {
         const { id } = req.params;
-        const { networkMode } = req.body;
+        const { networkMode, proxyId } = req.body;
 
         if (!networkMode || !['local', 'proxy'].includes(networkMode)) {
             return res.status(400).json({ error: 'Invalid network mode. Must be "local" or "proxy".' });
@@ -179,10 +179,29 @@ router.put('/:id/network-mode', async (req, res) => {
             return res.status(404).json({ error: 'Account not found' });
         }
 
-        await runQuery(
-            'UPDATE accounts SET network_mode = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-            [networkMode, id]
-        );
+        // If switching to proxy, proxyId is required (unless just switching mode back/forth without changing proxy, but better to enforce)
+        // Actually, if mode is proxy, we should update proxy_id. If local, maybe set to null?
+        // Let's allow updating both. If proxyId is provided, update it.
+
+        // Logic: Always update network_mode. Update proxy_id only if provided or if switching to local (clear it).
+        // Actually, easiest is to allow updating proxy_id if sent.
+
+        let query = 'UPDATE accounts SET network_mode = ?, updated_at = CURRENT_TIMESTAMP';
+        let params = [networkMode];
+
+        if (proxyId !== undefined) {
+            query += ', proxy_id = ?';
+            params.push(proxyId); // Could be null
+        } else if (networkMode === 'local') {
+            // Optional: Auto-clear proxy_id if local? 
+            // query += ', proxy_id = NULL';
+            // No, keep it saved in case they switch back. default behavior.
+        }
+
+        query += ' WHERE id = ?';
+        params.push(id);
+
+        await runQuery(query, params);
 
         res.json({
             message: 'Network mode updated successfully',
