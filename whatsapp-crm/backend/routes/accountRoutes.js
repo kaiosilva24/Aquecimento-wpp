@@ -82,36 +82,13 @@ router.get('/:id/qr', async (req, res) => {
             return res.status(404).json({ error: 'Account not found' });
         }
 
-        // If account is in proxy mode, MUST validate proxy connection first
-        if (account.network_mode === 'proxy') {
-            if (!account.proxy_id) {
-                console.error(`[SECURITY] Account ${id} is in PROXY mode but has no proxy_id assigned!`);
-                return res.status(403).json({
-                    error: 'Security Error: Proxy mode enabled but no proxy configured. Cannot generate QR code to prevent IP leak.'
-                });
-            }
-
-            const proxyConfig = await getQuery('SELECT * FROM proxies WHERE id = ?', [account.proxy_id]);
-
-            if (!proxyConfig || !proxyConfig.active) {
-                console.error(`[SECURITY] Account ${id} proxy is inactive or not found!`);
-                return res.status(403).json({
-                    error: 'Security Error: Proxy is inactive. Cannot generate QR code to prevent IP leak.'
-                });
-            }
-
-            console.log(`[SECURITY] Validating proxy connection for account ${id} before returning QR...`);
-            const connectionCheck = await checkConnection(proxyConfig);
-
-            if (!connectionCheck.success) {
-                console.error(`[SECURITY] Proxy connection FAILED for account ${id}: ${connectionCheck.error}`);
-                return res.status(403).json({
-                    error: `Proxy connection failed: ${connectionCheck.error}. QR code blocked for security.`,
-                    details: 'Fix the proxy configuration or switch to Local mode to proceed.'
-                });
-            }
-
-            console.log(`[SECURITY] Proxy verified for account ${id}. IP: ${connectionCheck.ip}, ISP: ${connectionCheck.isp}`);
+        // If account is in proxy mode, we rely on the Manager's initial check.
+        // Checking here on every poll (every few seconds) causes DDOS/Rate-limiting of ip-api.com
+        // and makes the UI extremely slow.
+        if (account.network_mode === 'proxy' && !account.proxy_id) {
+            return res.status(403).json({
+                error: 'Security Error: Proxy mode enabled but no proxy configured.'
+            });
         }
 
         const qrCode = whatsappManager.getQRCode(parseInt(id));
