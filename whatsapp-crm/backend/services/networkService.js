@@ -25,6 +25,7 @@ export async function checkConnection(proxyConfig = null) {
     }
 
     try {
+        const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 45000); // 45s timeout for mobile proxies
 
         // usage of ip-api.com/json which returns IP, ISP, Country, etc.
