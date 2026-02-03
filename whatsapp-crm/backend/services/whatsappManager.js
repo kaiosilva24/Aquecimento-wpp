@@ -61,12 +61,18 @@ class WhatsAppManager extends EventEmitter {
                 // SECURITY CHECK: Verify connection BEFORE initializing Baileys
                 // This guarantees that if the proxy is dead/blocking, we NEVER start the socket on local IP.
                 console.log(`[SECURITY] Verifying proxy connectivity for account ${accountId}...`);
-                const connectionCheck = await checkConnection(proxyConfig);
+                try {
+                    const connectionCheck = await checkConnection(proxyConfig);
 
-                if (!connectionCheck.success) {
-                    const errorMsg = `Proxy connection check FAILED: ${connectionCheck.error || 'Unknown error'}. Strict mode detected. Aborting.`;
-                    console.error(`[SECURITY CRITICAL] ${errorMsg}`);
-                    throw new Error(errorMsg); // STRICT CHECK ENABLED
+                    if (!connectionCheck.success) {
+                        const errorMsg = `Proxy connection check FAILED: ${connectionCheck.error || 'Unknown error'}. Strict mode detected. Aborting.`;
+                        console.error(`[SECURITY CRITICAL] ${errorMsg}`);
+                        throw new Error(errorMsg); // STRICT CHECK ENABLED
+                    }
+                    console.log(`[SECURITY] Proxy verified. IP: ${connectionCheck.ip}, ISP: ${connectionCheck.isp}`);
+                } catch (proxyError) {
+                    console.error(`[SECURITY ERROR] Proxy validation raised exception: ${proxyError.message}`);
+                    throw proxyError; // Re-throw to be caught by outer try-catch, but ensured it's logged cleanly
                 }
 
                 console.log(`[SECURITY] Proxy verified. IP: ${connectionCheck.ip}, ISP: ${connectionCheck.isp}`);
